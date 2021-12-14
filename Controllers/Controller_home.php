@@ -6,8 +6,9 @@ class Controller_home extends Controller{
     $m = Model::getModel();
     
     $this->gestionfichier();
+    $tabsend = array();
 
-    $this->render('home');
+    $this->render('home',['liste'=>$tabsend]);
 }
 
   public function action_default(){

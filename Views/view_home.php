@@ -2,9 +2,9 @@
 require('view_begin.php');
 ?>
 
-<form action = "?controller=home&action=recherche" method="post">
-				<p> <input type="text" name="name"/></p>
-				<p>  <input type="submit" value="Chercher"/> </p>
+<form class="form-inline" action = "?controller=home&action=recherche" method="post" >
+				<input type="text" name="name" size="50" placeholder="Mot clés"/>
+				<input type="submit" value="Chercher" class="btn btn-primary mb-2"/></form>
 
 <ul>			
 <?php foreach ($liste as $key => $value):  ?>
