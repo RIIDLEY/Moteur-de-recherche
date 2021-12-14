@@ -6,7 +6,7 @@ Utilisation d'un design pattern MVC avec le langage PHP.
 Une Base de Données sous MySQL est utilisé pour stocker les données.  
 J'ai utilisé WAMP pour travailler sur ce projet.  
 
-## Comment utiliser
+## Comment l'installer
 
 Il faut créer un nouvelle utilisateur MySQL/MariaDB avec comme login : "moteur-recherche" et comme mot de passe : "V1MCn2wMP8GFIefQ"  
 Par la suite lancez le script SQL moteur-recherche.sql qui se trouve dans le dossier Utils.  
