@@ -33,9 +33,6 @@ class Model
     }
 
 
-    /**
-     * Méthode permettant de récupérer un modèle car le constructeur est privé (Implémentation du Design Pattern Singleton)
-     */
     public static function getModel()
     {
 
@@ -75,13 +72,8 @@ class Model
     {
 
         try {
-            //Préparation de la requête
             $requete = $this->bd->prepare('INSERT INTO document (name) VALUES (:name)');
-
-            //Remplacement des marqueurs de place par les valeurs
             $requete->bindValue(':name', $name, PDO::PARAM_STR);
-
-            //Exécution de la requête
             return $requete->execute();
         } catch (PDOException $e) {
             die('Echec addDoc, erreur n°' . $e->getCode() . ':' . $e->getMessage());
@@ -129,16 +121,11 @@ class Model
     {
 
         try {
-            //Préparation de la requête
             $requete = $this->bd->prepare('INSERT INTO listemot (Mot, Occurence, Document) VALUES (:Mot, :Occurence, :Document)');
-
-            //Remplacement des marqueurs de place par les valeurs
             $marqueurs = ['Mot', 'Occurence', 'Document'];
             foreach ($marqueurs as $value) {
                 $requete->bindValue(':' . $value, $infos[$value]);
             }
-
-            //Exécution de la requête
             return $requete->execute();
         } catch (PDOException $e) {
             die('Echec addMot, erreur n°' . $e->getCode() . ':' . $e->getMessage());

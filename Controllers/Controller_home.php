@@ -11,47 +11,49 @@ class Controller_home extends Controller{
     $this->render('home',['liste'=>$tabsend]);
 }
 
-  public function action_default(){
+  public function action_default(){//fonction appele par defaut par la page
     $this->action_home();
   }
 
   public function gestionfichier(){
-    $m = Model::getModel();
-    $nbdoc = $m->getNbDoc();
+    $m = Model::getModel();//recupere le model
+    $nbdoc = $m->getNbDoc();//retourne le nombre de document present sur la BDD
     $directory = "Content/doc/";
     $filecount = 0;
     $files = glob($directory . "*");
-    $getDocDB = $m->getDocument();
+    $getDocDB = $m->getDocument();//retourne liste des documents reference dans la BDD
 
-    if ($files){
+    if ($files){//calcule le nombre de fichier sur le serveur
       $filecount = count($files);
     } 
 
-    foreach ($getDocDB as $key =>$value) {//nettoyage de la DB, supprime dans la DB les données qui ne sont plus présent dans le serveur
+    //nettoyage de la BDD, supprime dans la BDD les données qui ne sont plus présent dans le serveur. Si un fichier a été supprimé sur le serveur, la BDD le supprime de ses données
+    foreach ($getDocDB as $key =>$value) {// boule qui sort les elements dans la BDD
       $trouve = false;
-      for ($i=0; $i < $filecount; $i++) { 
+      for ($i=0; $i < $filecount; $i++) { // boule qui sort les elements dans le serveur
         $name = explode("/", $files[$i]);
-        if ($value == $name[2]) {
-          $trouve = true;
+        if ($value == $name[2]) {//s'il le trouve danbs la BDD
+          $trouve = true;// on modifie le statue de la var
         }
       }
-      if ($trouve == false) {
-        $m->removeDoc($value);
-        $m->removeMot($value);
+      if ($trouve == false) {//s'il ne trouve pas
+        $m->removeDoc($value);//supprime de la table document
+        $m->removeMot($value);//supprime de la table listemot
       }
     }
 
-    for ($i=0; $i < $filecount; $i++) {//ajoutu dans la DB des nouuveaux fichiers non traité
+    //ajout dans la BDD des nouuveaux fichiers trouvé
+    for ($i=0; $i < $filecount; $i++) {// boule qui sort les elements dans le serveur
       $trouve2 = false;
-      $DocServ = explode("/", $files[$i]); 
-      foreach ($getDocDB as $key => $value) {
-        if($DocServ[2]==$value){
-          $trouve2 = true;
+      $DocServ = explode("/", $files[$i]); //explode pour sortir uniquement le nom du fichier avec son type. Si pas d'explode cela sort tout le chemin
+      foreach ($getDocDB as $key => $value) {// boule qui sort les elements dans la BDD
+        if($DocServ[2]==$value){//s'il est deja dans la BDD
+          $trouve2 = true;// change le statue de la var
         }
       }
-      if ($trouve2 == false) {
-        $m->addDoc($DocServ[2]);
-        $this->indexation($DocServ[2]);  
+      if ($trouve2 == false) {//s'il n'est pas dans la BDD
+        $m->addDoc($DocServ[2]);//ajoute dans la table document pour le referencer
+        $this->indexation($DocServ[2]);//fait l'indexation
       }
     }
 
@@ -59,20 +61,20 @@ class Controller_home extends Controller{
 
   public function explode_bis($texte, $separateurs){
 	  $tok =  strtok($texte, $separateurs);//separe la chaine en tableau par rapport aux separateurs
-    $listemotvide = file_get_contents ("Utils/Liste_Mot_Vide.txt");
+    $listemotvide = file_get_contents ("Utils/Liste_Mot_Vide.txt");//Sort le fichier de mot vide
     $separateurs2 =  "\n" ;
-    $motvide = explode($separateurs2,$listemotvide);
+    $motvide = explode($separateurs2,$listemotvide);//met le fichier de mot vide sous forme de tableau
     $tab_tok=array();
 
-    for ($i=0; $i < count($motvide); $i++) { 
+    for ($i=0; $i < count($motvide); $i++) {//enleve les espaces present au tour des mots du fichier de mot vide
       $motvide[$i] = trim($motvide[$i]);
     }
 
-	  if(strlen($tok) > 2  && !in_array($tok,$motvide))$tab_tok[] = $tok;//si mot superieur à 2 char, on le garde
+	  if(strlen($tok) > 2  && !in_array($tok,$motvide))$tab_tok[] = $tok;//Si la taille du mot est supérieur à 2 et qu'il est pas present dans le tableau de mot vide on le garde
 
 	    while ($tok !== false) {
 		      $tok = strtok($separateurs);
-		      if(strlen($tok) > 2  && !in_array($tok,$motvide))$tab_tok[] = $tok;
+		      if(strlen($tok) > 2  && !in_array($tok,$motvide))$tab_tok[] = $tok;//Si la taille du mot est supérieur à 2 et qu'il est pas present dans le tableau de mot vide on le garde
 	    }
 
 	return $tab_tok;
@@ -85,32 +87,31 @@ class Controller_home extends Controller{
     $separateurs =  "’'. ,…][(«»)/\r\n|\n|\r/" ;//caracteres de séparation des mots
 	  $tab_toks = $this->explode_bis(mb_strtolower($texte,'UTF-8'), $separateurs);//séparation
 
-    $tab_new_mots_occurrences = array_count_values ($tab_toks);
+    $tab_new_mots_occurrences = array_count_values ($tab_toks);//compte le nombre d'occurence
 
-    foreach($tab_new_mots_occurrences as $k=> $v){
+    foreach($tab_new_mots_occurrences as $k=> $v){//Boucle qui tourne dans le tableau $tab_new_mots_occurrences qui contient le mot avec son occurence et le document dont il provient
       $infos = array("Mot"=>$k,"Occurence"=>$v,"Document"=>$document);
-      $m->addMot($infos);
-      
+      $m->addMot($infos);//ajoute dans la BDD
     }
 
   }
 
-  public function action_recherche(){
+  public function action_recherche(){//cherche un mot clé
     $m = Model::getModel();
-    $this->gestionfichier();
+    $this->gestionfichier();//verification des fichiers
     $tabsend = array();
   if(isset($_POST['name']) and !preg_match("#^\s*$#",$_POST['name'])){
-    $tab = $m->getMot($_POST['name']);
-    if (empty($tab)) {
-      echo "<script>alert(\"Rien trouvé\")</script>";
-    }else {
-      foreach ($tab as $key => $value) {
+    $tab = $m->getMot($_POST['name']);//vas chercher s'il existe dans la BDDD
+    if (empty($tab)) {//si il n'y a rien
+      echo "<script>alert(\"Rien trouvé\")</script>";//alert pop up
+    }else {//s'il y a quelque chose
+      foreach ($tab as $key => $value) {//fait un tableau de tableau avec les informations
         $tabsend[] = array("Nom"=>$value[1],"Occurence"=>$value[2],"Document"=>$value[3]);
       }
     }
   }
 
-  $this->render('home', ['liste'=>$tabsend]);
+  $this->render('home', ['liste'=>$tabsend]);//envoie les données à la page
 }
 
   
