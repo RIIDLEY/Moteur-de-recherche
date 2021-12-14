@@ -102,7 +102,7 @@ class Controller_home extends Controller{
   if(isset($_POST['name']) and !preg_match("#^\s*$#",$_POST['name'])){
     $tab = $m->getMot($_POST['name']);
     if (empty($tab)) {
-      print("Rien trouvé");
+      echo "<script>alert(\"Rien trouvé\")</script>";
     }else {
       foreach ($tab as $key => $value) {
         $tabsend[] = array("Nom"=>$value[1],"Occurence"=>$value[2],"Document"=>$value[3]);
