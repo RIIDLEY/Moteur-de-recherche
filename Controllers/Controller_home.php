@@ -5,20 +5,8 @@ class Controller_home extends Controller{
   public function action_home(){
     $m = Model::getModel();
     
-    $this->indexation("poeme.txt");   
-    /*$listemotvide = file_get_contents ("Utils/Liste_Mot_Vide.txt");
-    $separateurs2 =  "\n" ;//faut retirer l'espace !!
-    $motvide = explode($separateurs2,$listemotvide);
-    $keywords = explode(" ",$motvide[0]);*/
-    //print_r($motvide);
+    $this->gestionfichier();
 
-    /*for ($i=0; $i < count($motvide); $i++) { 
-      if ("ainsi"===trim($motvide[$i])) {
-        echo "couucou";
-      }
-    }*/
-
-    
     $this->render('home');
 }
 
@@ -32,32 +20,40 @@ class Controller_home extends Controller{
     $directory = "Content/doc/";
     $filecount = 0;
     $files = glob($directory . "*");
+    $getDocDB = $m->getDocument();
 
     if ($files){
       $filecount = count($files);
     } 
 
-    if($nbdoc == 0 And $filecount >= 1){
-      $name = explode("/", $files[0]);
-      $m->addDoc($name[2]);
-    }   
-
+    foreach ($getDocDB as $key =>$value) {//nettoyage de la DB, supprime dans la DB les données qui ne sont plus présent dans le serveur
+      $trouve = false;
       for ($i=0; $i < $filecount; $i++) { 
-        $statue = true;
         $name = explode("/", $files[$i]);
-        $getDocDB = $m->getDocument();
-        foreach ($getDocDB as $key =>$value) {
-          if ($value == $name[2]) {
-            $statue = false;
-          }
+        if ($value == $name[2]) {
+          $trouve = true;
         }
-
-        if($statue == true){
-          $m->addDoc($name[2]);
-          $this->indexation($name[2]);         
-        }
-
       }
+      if ($trouve == false) {
+        $m->removeDoc($value);
+        $m->removeMot($value);
+      }
+    }
+
+    for ($i=0; $i < $filecount; $i++) {//ajoutu dans la DB des nouuveaux fichiers non traité
+      $trouve2 = false;
+      $DocServ = explode("/", $files[$i]); 
+      foreach ($getDocDB as $key => $value) {
+        if($DocServ[2]==$value){
+          $trouve2 = true;
+        }
+      }
+      if ($trouve2 == false) {
+        $m->addDoc($DocServ[2]);
+        $this->indexation($DocServ[2]);  
+      }
+    }
+
   }
 
   public function explode_bis($texte, $separateurs){
@@ -97,6 +93,8 @@ class Controller_home extends Controller{
     }
 
   }
+
+  public function action_recherche()
 
 
   

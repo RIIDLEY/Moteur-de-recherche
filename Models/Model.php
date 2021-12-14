@@ -64,7 +64,7 @@ class Model
         try {
             $requete = $this->bd->prepare('Select name from document');
             $requete->execute();
-            return $requete->fetch(PDO::FETCH_ASSOC);
+            return $requete->fetchall(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
             die('Echec getDocument, erreur n°' . $e->getCode() . ':' . $e->getMessage());
         }
@@ -86,6 +86,13 @@ class Model
         } catch (PDOException $e) {
             die('Echec addDoc, erreur n°' . $e->getCode() . ':' . $e->getMessage());
         }
+    }
+
+    public function removeDoc($name)
+    {
+        $requete = $this->bd->prepare("DELETE FROM document WHERE name = :name");
+        $requete->bindValue(':name', $name, PDO::PARAM_STR);
+        return $requete->execute();
     }
 
 
@@ -138,7 +145,12 @@ class Model
         }
     }
 
-
+    public function removeMot($name)
+    {
+        $requete = $this->bd->prepare("DELETE FROM listemot WHERE Document = :name");
+        $requete->bindValue(':name', $name, PDO::PARAM_STR);
+        return $requete->execute();
+    }
 
 
 }
