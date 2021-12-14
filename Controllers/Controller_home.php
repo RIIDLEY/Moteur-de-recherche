@@ -94,8 +94,22 @@ class Controller_home extends Controller{
 
   }
 
-  public function action_recherche()
+  public function action_recherche(){
+    $m = Model::getModel();
+    $tabsend = array();
+  if(isset($_POST['name']) and !preg_match("#^\s*$#",$_POST['name'])){
+    $tab = $m->getMot($_POST['name']);
+    if (empty($tab)) {
+      print("Rien trouvé");
+    }else {
+      foreach ($tab as $key => $value) {
+        $tabsend[] = array("Nom"=>$value[1],"Occurence"=>$value[2],"Document"=>$value[3]);
+      }
+    }
+  }
 
+  $this->render('home', ['liste'=>$tabsend]);
+}
 
   
 }

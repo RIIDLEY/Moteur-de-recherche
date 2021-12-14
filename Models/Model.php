@@ -116,10 +116,10 @@ class Model
     {
 
         try {
-            $requete = $this->bd->prepare('Select * from litemot WHERE Mot = :mot');
+            $requete = $this->bd->prepare('Select * from listemot WHERE Mot = :mot');
             $requete->bindValue(':mot', $mot);
             $requete->execute();
-            return $requete->fetch(PDO::FETCH_ASSOC);
+            return $requete->fetchall(PDO::FETCH_NUM);
         } catch (PDOException $e) {
             die('Echec getMot, erreur n°' . $e->getCode() . ':' . $e->getMessage());
         }
