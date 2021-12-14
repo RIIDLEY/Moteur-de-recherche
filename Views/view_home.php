@@ -8,7 +8,7 @@ require('view_begin.php');
 
 <ul>			
 <?php foreach ($liste as $key => $value):  ?>
-				<li class="list-group-item">Mot trouvé dans le document : <a href="Content/doc/<?=$value["Document"]?>"><?=$value["Document"]?></a>. Avec <?=$value["Occurence"]?> occurence</li>
+				<li class="list-group-item">Le mot "<strong><?=$value["Nom"]?></strong>" a été trouvé dans le document : <a href="Content/doc/<?=$value["Document"]?>"><?=$value["Document"]?></a>. Avec <?=$value["Occurence"]?> occurence</li>
 <?php endforeach ?>
 </ul>	
 <?php
