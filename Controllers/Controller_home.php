@@ -97,6 +97,7 @@ class Controller_home extends Controller{
 
   public function action_recherche(){
     $m = Model::getModel();
+    $this->gestionfichier();
     $tabsend = array();
   if(isset($_POST['name']) and !preg_match("#^\s*$#",$_POST['name'])){
     $tab = $m->getMot($_POST['name']);
