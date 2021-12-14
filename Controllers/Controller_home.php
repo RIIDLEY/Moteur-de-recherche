@@ -101,7 +101,8 @@ class Controller_home extends Controller{
     $this->gestionfichier();//verification des fichiers
     $tabsend = array();
   if(isset($_POST['name']) and !preg_match("#^\s*$#",$_POST['name'])){
-    $tab = $m->getMot($_POST['name']);//vas chercher s'il existe dans la BDDD
+    $str = mb_strtolower($_POST['name'], 'UTF-8');
+    $tab = $m->getMot($str);//vas chercher s'il existe dans la BDDD
     if (empty($tab)) {//si il n'y a rien
       echo "<script>alert(\"Rien trouvé\")</script>";//alert pop up
     }else {//s'il y a quelque chose
