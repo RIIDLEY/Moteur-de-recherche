@@ -108,7 +108,7 @@ class Model
     {
 
         try {
-            $requete = $this->bd->prepare('Select * from listemot WHERE Mot = :mot');
+            $requete = $this->bd->prepare('Select * from listemot WHERE Mot = :mot ORDER BY Occurence DESC');
             $requete->bindValue(':mot', $mot);
             $requete->execute();
             return $requete->fetchall(PDO::FETCH_NUM);
