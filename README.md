@@ -2,8 +2,8 @@
 ***
 
 L'objectif de ce projet est de réaliser un moteur de recherche simple.
-Ce moteur de recherche permet d'effecter une analyse sur des documents texte.
-Avant d'être analysé, ces documents sont indexé dans une basé de données que le moteur de recherche utilise.
+Ce moteur de recherche permet d'effectuer une analyse sur des documents texte.
+Avant d'être analysé, ces documents sont indexés dans une base de données que le moteur de recherche utilise.
 L'indexation s'effectue avec filtre de liste de mot vide.
 
 ## Technologies utilisés
