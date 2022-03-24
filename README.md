@@ -1,5 +1,11 @@
 # Moteur de recherche de Lahoucine HAMSEK
 ***
+
+L'objectif de ce projet est de réaliser un moteur de recherche simple.
+Ce moteur de recherche permet d'effecter une analyse sur des documents texte.
+Avant d'être analysé, ces documents sont indexé dans une basé de données que le moteur de recherche utilise.
+L'indexation s'effectue avec filtre de liste de mot vide.
+
 ## Technologies utilisés
 
 Utilisation d'un design pattern MVC avec le langage PHP.  
